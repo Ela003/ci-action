@@ -33,3 +33,21 @@ jobs:
 
       - name: CI Success
         run: echo "CI passed successfully"
+
+
+  coolify:
+    name: Deploy to Coolify
+    runs-on: ubuntu-latest
+
+    needs: test
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+
+      - name: Deploy to Coolify
+        run: |
+          curl --fail-with-body \
+            --request GET \
+            "${{ secrets.COOLIFY_DEPLOY_WEBHOOK }}" \
+            --header "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
